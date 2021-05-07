@@ -1,28 +1,32 @@
 package com.promineotech.jeep.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.core.ParameterizedTypeReference;
 
 import com.promineotech.jeep.JeepSales;
 import com.promineotech.jeep.controller.support.FetchJeepTestSupport;
 import com.promineotech.jeep.entity.Jeep;
 import com.promineotech.jeep.entity.JeepModel;
-import com.sun.tools.javac.util.List;
 
 import io.swagger.v3.oas.models.PathItem.HttpMethod;
 
-//@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes= {JeepSales.class})
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+
+
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes= {JeepSales.class})
+//@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Sql(scripts = {
 	    "classpath:flyway/migrations/V1.0__Jeep_Schema.sql",
@@ -42,16 +46,20 @@ class FetchJeepTest extends FetchJeepTestSupport {
 		
 		//when: a connection is made to the uri
 		//per video
-		//ResponseEntity<Jeep> response = getRestTemplate().getForEntity(uri, Jeep.class);
-		
-		//per homework
-		ResponseEntity<List<Jeep>> response = restTemplate.exchange(uri, HttpMethod.GET, null, 
+		ResponseEntity<List<Jeep>> response = getRestTemplate().exchange(uri, HttpMethod.GET, null, 
 				new ParameterizedTypeReference<>() {});
+	
 		
 		//then: a success (OK - 200) status code is returned
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		
+		//and: the actual list returned is the same as the expected list
+		List<Jeep> expected = buildExpected();
+		assertThat(response.getBody()).isEqualTo(expected);
+		
 	}
 
+ 
 
 }
-  
+   
