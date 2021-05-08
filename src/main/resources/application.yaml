@@ -1,4 +1,10 @@
+spring:
+  datasource:
+    password: Dolphins
+    username: root
+    url: jdbc:mysql://localhost:3306/jeep  
+
 logging:
-level:
-root: warn
-'[com.promineotech]': debug
+  level:
+    root: warn
+    '[com.promineotech]': debug

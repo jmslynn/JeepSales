@@ -1,5 +1,3 @@
-create DATABASE if not exists jeep;
-use jeep;
 DROP TABLE IF EXISTS order_options;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS options;
