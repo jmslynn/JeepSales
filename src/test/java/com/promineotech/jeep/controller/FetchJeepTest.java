@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
@@ -55,11 +56,63 @@ class FetchJeepTest extends FetchJeepTestSupport {
 		
 		assertThat(actual).isEqualTo(expected);
 		 
+	}//end test
+	@Test
+	void testThatAnErrorMessageIsReturnedWhenAnInvalidTrimIsSupplied () {
+ 	 //given: a valid model, trim and uri
+		JeepModel model = JeepModel.WRANGLER;
+		String trim = "Invalid Value";
+		String uri = String.format("%s?model=%s&trim=%s", getBaseUri(), model, trim);
 		
 		
-	}
+		//when: a connection is made to the uri
+		ResponseEntity<Map<String, Object>> response = getRestTemplate().exchange(uri, HttpMethod.GET, null, 
+				new ParameterizedTypeReference<>() {});
+	
+		
+		//then: a not found (404) status code is returned
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+		
+		//and: an error messages is returned
+		Map<String, Object> error = response.getBody();
+		
+		// @formatter: off
+		assertThat(error)
+			.containsKey("message")
+			.containsEntry("status code", HttpStatus.NOT_FOUND.value())
+			.containsEntry("uri", "/jeeps")
+			.containsKey("timestamp")
+			.containsEntry("reason", HttpStatus.NOT_FOUND.getReasonPhrase());
+		 // @formatter: on
+		
+	}//end test
 
- 
+	@Test
+	void testThatJeepsAreReturnedWhenAValidModelAndTrimAreSupplied() {
+ 	 //given: a valid model, trim and uri
+		JeepModel model = JeepModel.WRANGLER;
+		String trim = "Sport";
+		String uri = String.format("%s?model=%s&trim=%s", getBaseUri(), model, trim);
+		
+		
+		//when: a connection is made to the uri
+		ResponseEntity<List<Jeep>> response = getRestTemplate().exchange(uri, HttpMethod.GET, null, 
+				new ParameterizedTypeReference<>() {});
+	
+		
+		//then: a success (OK - 200) status code is returned
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		
+		//and: the actual list returned is the same as the expected list
+		List<Jeep> actual = response.getBody();
+		List<Jeep> expected = buildExpected();
+		
+		actual.forEach(jeep -> jeep.setModelPK(null));
+		
+		assertThat(actual).isEqualTo(expected);
+		 
+	}//end test
+
 
 }
    
