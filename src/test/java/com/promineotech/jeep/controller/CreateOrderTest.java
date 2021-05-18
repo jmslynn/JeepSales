@@ -1,22 +1,20 @@
 package com.promineotech.jeep.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
 import com.promineotech.jeep.controller.support.CreateOrderTestSupport;
-import com.promineotech.jeep.entity.Order;
-import com.promineotech.jeep.entity.OrderRequest;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -34,7 +32,11 @@ class CreateOrderTest extends CreateOrderTestSupport {
 		//Given: an order as JSON
 		String body = createOrderBody();
 		String uri = getBaseUriForOrders();
-		HttpEntity<String> bodyEntity = new HttpEntity<>(body);
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		
+		HttpEntity<String> bodyEntity = new HttpEntity<>(body, headers);
 
 		//When: the order is sent
 		ResponseEntity<?> response = getRestTemplate().exchange(

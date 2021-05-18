@@ -106,7 +106,7 @@ class FetchJeepTest {
 		void testThatAnErrorMessageIsReturnedWhenAnInvalidValueIsSupplied(String model, String trim, String reason) {
 	 	 //given: a valid model, trim and uri
 
-			String uri = String.format("%s?model=%s&trim=%s", getBaseUri(), model, trim);
+			String uri = String.format("%s?model=%s&trim=%s", getBaseUriForJeeps(), model, trim);
 			
 			
 			//when: a connection is made to the uri
