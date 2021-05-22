@@ -37,7 +37,7 @@ public class DefaultJeepOrderDao implements JeepOrderDao {
 	  
 		@Override
 		public Order saveOrder(Customer customer, Jeep jeep, Color color, Engine engine, 
-		Tire tire, BigDecimal price, List<Options> options) {
+		Tire tire, BigDecimal price, List<Option> options) {
 			SqlParams params = generateInsertSql(customer, jeep, color, engine, tire, price);
 
 			KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -54,10 +54,8 @@ public class DefaultJeepOrderDao implements JeepOrderDao {
 					.options(options)
 					.price(price)
 					.build();
-					
-			
 			//formatter:on
-		}
+		} //end saveOrder method
 		
 		
 		
