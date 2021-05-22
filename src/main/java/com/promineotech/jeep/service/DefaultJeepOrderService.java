@@ -1,5 +1,7 @@
 package com.promineotech.jeep.service;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,6 @@ import com.promineotech.jeep.entity.Option;
 import com.promineotech.jeep.entity.Order;
 import com.promineotech.jeep.entity.OrderRequest;
 import com.promineotech.jeep.entity.Tire;
-import com.sun.tools.javac.util.List;
 
 @Service
 public class DefaultJeepOrderService implements JeepOrderService {
@@ -26,24 +27,25 @@ public class DefaultJeepOrderService implements JeepOrderService {
 	@Transactional
 	@Override
 	public Order createOrder(OrderRequest orderRequest) {
-		Customer customer = jeepOrderDao.fetchCustomer(orderRequest.getCustomer());
+		Customer customer = getCustomer(orderRequest);
+		Jeep jeep = getModel(orderRequest);	
+		Color color = getColor(orderRequest);
+		Engine engine = getEngine(orderRequest);
+		Tire tire = getTire(orderRequest);
+		List<Option> options = getOption(orderRequest);
 		
-		Jeep jeep = jeepOrderDao
-				.fetchModel(orderRequest.getModel(), orderRequest.getTrim(),) orderRequest.getDoors());
-				
-		Color color = jeeporderDao.fetchColor(orderRequest.getColor());
+		BigDecimal price = 
+				jeep.getBasePrice().add(color.getPrice()).add(engine.getPrice())
+				.add(tire.getPrice());
 		
-		Engine engine = jeepOrderDao.fetchEngine(orderRequest.getEngine());
+		for(Option option : options) {
+			price = price.add(option.getPrice());
+		}
 		
-		Tire tire = jeepOrderDao.fetchTire(orderRequest.getTire());
-		
-		return null;
+		return jeepOrderDao.saveOrder(customer, jeep, color, engine, tire, price, options);
 		
 		
-	}//end method
-	
-	
-	//added stuff
+	}//end order method
 	
 	  /**
 	   * 
@@ -51,6 +53,7 @@ public class DefaultJeepOrderService implements JeepOrderService {
 	   * @return
 	   */
 	  private List<Option> getOption(OrderRequest orderRequest) {
+		  
 	    return jeepOrderDao.fetchOptions(orderRequest.getOptions());
 	  }
 
@@ -111,5 +114,5 @@ public class DefaultJeepOrderService implements JeepOrderService {
 	        .orElseThrow(() -> new NoSuchElementException("Customer with ID="
 	            + orderRequest.getCustomer() + " was not found"));
 	  }
-
 }
+	
