@@ -49,7 +49,9 @@ public class DefaultJeepOrderDao implements JeepOrderDao {
 			return Order.builder()
 					.orderPK(orderPK)
 					.customer(customer)
-					.model(jeep).color(color)
+					.model(jeep)
+					.color(color)
+					.engine(engine)
 					.tire(tire)
 					.options(options)
 					.price(price)
@@ -93,29 +95,6 @@ private void saveOptions(List<Option> options, Long orderPK) {
 		    
 		    return params;
 		  }
-//	  /**
-//	   * 
-//	   * @param option
-//	   * @param orderPK
-//	   * @return
-//	   */
-//	  private SqlParams generateInsertSql(Option option, Long orderPK) {
-//	    SqlParams params = new SqlParams();
-//	    
-//	    // @formatter:off
-//	    params.sql = ""
-//	        + "INSERT INTO order_options ("
-//	        + "option_fk, order_fk"
-//	        + ") VALUES ("
-//	        + ":option_fk, :order_fk"
-//	        + ")";
-//	    // @formatter:on
-//	    
-//	    params.source.addValue("option_fk", option.getOptionPK());
-//	    params.source.addValue("order_fk", orderPK);
-//	    
-//	    return params;
-//	  }
 
 	  /**
 	   * 

@@ -25,6 +25,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
 import com.promineotech.jeep.Constants;
+import com.promineotech.jeep.JeepSales;
 import com.promineotech.jeep.controller.support.FetchJeepTestSupport;
 import com.promineotech.jeep.entity.Jeep;
 import com.promineotech.jeep.entity.JeepModel;
@@ -36,29 +37,28 @@ import com.promineotech.jeep.service.JeepSalesService;
 class FetchJeepTest {
 	
 	@Nested
-	@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+	@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes= {JeepSales.class})
 	@ActiveProfiles("test")
 	@Sql(scripts = {
 		    "classpath:flyway/migrations/V1.0__Jeep_Schema.sql",
 		    "classpath:flyway/migrations/V1.1__Jeep_Data.sql"}, 
 		    config = @SqlConfig(encoding = "utf-8"))
-
 	class TestsThatDoNotPolluteTheApplicationContext extends FetchJeepTestSupport {
 		
 		/**
 		 * 
 		 */
-		@Test
-		void testThatJeepsAreReturnedWhenAValidModelAndTrimAreSupplied() {
+//		@Test
+//		void testThatJeepsAreReturnedWhenAValidModelAndTrimAreSupplied() {
 //	 	 //given: a valid model, trim and uri
 //			JeepModel model = JeepModel.WRANGLER;
 //			String trim = "Sport";
-//			String uri = String.format("%s?model=%s&trim=%s", getBaseUri(), model, trim);
+//			String uri = String.format("%s?model=%s&trim=%s", getBaseUriForJeeps(), model, trim);
 //			
 //			
 //			//when: a connection is made to the uri
 //			ResponseEntity<List<Jeep>> response = getRestTemplate().exchange(uri, HttpMethod.GET, null, 
-//					new ParameterizedTypeReference<>() {});
+//					new ParameterizedTypeReference<List<Jeep>>() {});
 //		
 //			
 //			//then: a success (OK - 200) status code is returned
@@ -68,37 +68,37 @@ class FetchJeepTest {
 //			List<Jeep> actual = response.getBody();
 //			List<Jeep> expected = buildExpected();
 //			
-//			actual.forEach(jeep -> jeep.setModelPK(null));
+////			actual.forEach(jeep -> jeep.setModelPK(null));
 //			
 //			assertThat(actual).isEqualTo(expected);
 //			 
-		}//end test
+//		}//end test
 //		
 		/**
 		 * 
 		 */
 		@Test
 		void testThatAnErrorMessageIsReturnedWhenAnUnknownTrimIsSupplied() {
-//	 	 //given: a valid model, trim and uri
-//			JeepModel model = JeepModel.WRANGLER;
-//			String trim = "Unknown Value";
-//			String uri = String.format("%s?model=%s&trim=%s", getBaseUri(), model, trim);
-//			
-//			
-//			//when: a connection is made to the uri
-//			ResponseEntity<Map<String, Object>> response = getRestTemplate().exchange(uri, HttpMethod.GET, null, 
-//					new ParameterizedTypeReference<>() {});
-//		
-//			
-//			//then: a not found (404) status code is returned
-//			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-//			
-//			//and: an error messages is returned
-//			Map<String, Object> error = response.getBody();               
-//			
-//			assertErrorMessageValid(error, HttpStatus.NOT_FOUND);
-//
-//			
+	 	 //given: a valid model, trim and uri
+			JeepModel model = JeepModel.WRANGLER;
+			String trim = "Unknown Value";
+			String uri = String.format("%s?model=%s&trim=%s", getBaseUriForJeeps(), model, trim);
+			
+			
+			//when: a connection is made to the uri
+			ResponseEntity<Map<String, Object>> response = getRestTemplate().exchange(uri, HttpMethod.GET, null, 
+					new ParameterizedTypeReference<>() {});
+		
+			
+			//then: a not found (404) status code is returned
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+			
+			//and: an error messages is returned
+			Map<String, Object> error = response.getBody();               
+			
+			assertErrorMessageValid(error, HttpStatus.NOT_FOUND);
+
+			
 		}//end test
 
 		@ParameterizedTest
@@ -153,28 +153,28 @@ class FetchJeepTest {
 		 */
 		@Test
 		void testThatAnUnplannedErrorResultsInA500Status() {
-//	 	 //given: a valid model, trim and uri
-//			JeepModel model = JeepModel.WRANGLER;
-//			String trim = "Invalid";
-//			String uri = String.format("%s?model=%s&trim=%s", getBaseUri(), model, trim);
-//			
-//			//when jss fetchjeeps is called with model and trim, then throw a runtime exception
-//			doThrow(new RuntimeException("Ouch!")).when(jeepSalesService).fetchJeeps(model, trim);
-//			
-//			//when: a connection is made to the uri
-//			ResponseEntity<Map<String, Object>> response = getRestTemplate().exchange(uri, HttpMethod.GET, null, 
-//					new ParameterizedTypeReference<>() {});
-//		
-//			
-//			//then: an internal server error (500) status code is returned
-//			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-//			
-//			//and: an error messages is returned
-//			Map<String, Object> error = response.getBody();               
-//			
-//			assertErrorMessageValid(error, HttpStatus.INTERNAL_SERVER_ERROR);
-//
-//			
+	 	 //given: a valid model, trim and uri
+			JeepModel model = JeepModel.WRANGLER;
+			String trim = "Invalid";
+			String uri = String.format("%s?model=%s&trim=%s", getBaseUriForJeeps(), model, trim);
+			
+			//when jss fetchjeeps is called with model and trim, then throw a runtime exception
+			doThrow(new RuntimeException("Ouch!")).when(jeepSalesService).fetchJeeps(model, trim);
+			
+			//when: a connection is made to the uri
+			ResponseEntity<Map<String, Object>> response = getRestTemplate().exchange(uri, HttpMethod.GET, null, 
+					new ParameterizedTypeReference<>() {});
+		
+			
+			//then: an internal server error (500) status code is returned
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+			
+			//and: an error messages is returned
+			Map<String, Object> error = response.getBody();               
+			
+			assertErrorMessageValid(error, HttpStatus.INTERNAL_SERVER_ERROR);
+
+			
 		}//end test
 	}//end nested class 2
 	

@@ -31,9 +31,6 @@ class CreateOrderTest extends CreateOrderTestSupport {
 	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
-	
-	
 	/**
 	 * 
 	 */
