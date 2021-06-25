@@ -39,7 +39,7 @@ public class DefaultJeepSalesDao implements JeepSalesDao {
 		params.put("model_id", model.toString());
 		params.put("trim_level", trim);
 		
-		return jdbcTemplate.query(sql, params, new RowMapper<>() {
+		return jdbcTemplate.query(sql, params, new RowMapper<Jeep>() {
 			
 			@Override
 			public Jeep mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -53,7 +53,7 @@ public class DefaultJeepSalesDao implements JeepSalesDao {
 						.wheelSize(rs.getInt("wheel_size"))
 						.build();
 
-
+//@formatter:on
 			}
 		});
 	}
